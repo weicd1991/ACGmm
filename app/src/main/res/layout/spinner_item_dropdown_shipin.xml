@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/arte_dy_tv"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:text="第一单元"
+    android:textColor="#393939"
+    android:textSize="15sp"
+    android:background="#FFFFFF"
+    android:gravity="center">
+
+</TextView>

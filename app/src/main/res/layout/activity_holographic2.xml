@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_holographic2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.jsmy.acgmm.activity.Holographic2Activity">
+
+    <FrameLayout
+        android:id="@+id/video_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:background="@android:color/black">
+
+        <com.universalvideoview.UniversalVideoView
+            android:id="@+id/videoView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            app:uvv_autoRotation="false"
+            app:uvv_fitXY="false" />
+
+        <com.universalvideoview.UniversalMediaController
+            android:id="@+id/media_controller"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:uvv_scalable="false" />
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/rela_play"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <EditText
+            android:id="@+id/edit_sige"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_centerHorizontal="true"
+            android:background="#FFFFFF"
+            android:digits="AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:imeOptions="flagNoExtractUi|actionDone"
+            android:inputType="textVisiblePassword"
+            android:minWidth="200dp"
+            android:text=""
+            android:textColor="#000000"
+            android:textCursorDrawable="@null"
+            android:textSize="15sp"
+            android:rotationX="180"/>
+
+        <TextView
+            android:id="@+id/tv_befor"
+            android:text="上"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignTop="@+id/edit_sige"
+            android:layout_marginRight="20dp"
+            android:layout_toLeftOf="@+id/edit_sige"
+            android:background="#FFFFFF"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="#000"
+            android:textSize="15sp"
+            android:rotationX="180"/>
+
+        <TextView
+            android:id="@+id/tv_next"
+            android:text="下"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignTop="@+id/edit_sige"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/edit_sige"
+            android:background="#FFFFFF"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="#000"
+            android:textSize="15sp"
+            android:rotationX="180"/>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

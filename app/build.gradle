@@ -1,0 +1,83 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.3"
+    defaultConfig {
+        applicationId "com.jsmy.acgmm"
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode 1
+        versionName "v1.0.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [
+                JPUSH_PKGNAME: applicationId,
+                JPUSH_APPKEY : "cf9b43e11a4a1b78cc458f0f", //JPush上注册的包名对应的appkey.
+                JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
+        ]
+        multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
+    }
+    signingConfigs {
+        config {
+            keyAlias '123456'
+            keyPassword '123456'
+            storeFile file('D:/work2/ACGmm/acgmm.jks')
+            storePassword '123456'
+            v1SigningEnabled true
+            v2SigningEnabled false
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.config
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+            signingConfig signingConfigs.config
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
+    compile 'com.android.support:design:26.0.0-alpha1'
+    testCompile 'junit:junit:4.12'
+    //retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.2.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
+    compile 'com.squareup.retrofit2:converter-scalars:2.2.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.2.0'
+    //butterknife
+    compile 'com.jakewharton:butterknife:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    //RxPermissions
+    compile 'com.tbruyelle.rxpermissions:rxpermissions:0.7.0@aar'
+    //图片加载
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    //方法数超限制
+    compile 'com.android.support:multidex:1.0.1'
+    //友盟
+    compile 'com.umeng.analytics:analytics:latest.integration'
+    //极光
+    compile 'cn.jiguang.sdk:jpush:3.0.9'
+    compile 'cn.jiguang.sdk:jcore:1.1.7'
+    compile 'cn.jiguang.sdk:jmessage:2.4.1'
+    //智能下拉控件
+    compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.4'
+    compile 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.4'
+    //banner图控件
+    compile 'com.youth.banner:banner:1.4.10'
+    //视频播放
+    compile 'com.linsea:universalvideoview:1.1.0@aar'
+    //movingimgview
+    compile 'com.flaviofaria:kenburnsview:1.0.7'
+    //cameraview
+    compile project(':camerajar')
+}

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_my_msg_info"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    tools:context="com.jsmy.acgmm.activity.MyMsgInfoActivity">
+
+    <include layout="@layout/tittle_activity" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_titleinfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:padding="20dp"
+            android:text="啊就是对话框吉安市"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/tv_titleinfo"
+            android:layout_marginRight="10dp"
+            android:text="2018-01-17 16:29:25"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tv_line"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@+id/tv_time"
+            android:layout_marginTop="10dp"
+            android:background="#CCCCCC" />
+
+        <TextView
+            android:id="@+id/tv_info"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/tv_line"
+            android:gravity="left"
+            android:padding="10dp"
+            android:text="阿斯达四大阿斯达四大阿斯达四大阿斯达四大阿斯达四大阿斯达四大阿斯达四大阿斯达四大阿斯达四大阿斯达四大阿斯达四大阿斯达四大阿斯达四大阿斯达四大阿斯达四大"
+            android:textSize="15sp" />
+
+    </RelativeLayout>
+
+</LinearLayout>

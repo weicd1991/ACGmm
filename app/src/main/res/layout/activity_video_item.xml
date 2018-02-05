@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <com.jsmy.acgmm.view.CircleImageView
+        android:id="@+id/img_tx"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@mipmap/ic_launcher" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/img_tx"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/tv_acter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="作者：xxx" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="2018-01-18 10:33:28" />
+
+        <TextView
+            android:id="@+id/tv_sige"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_acter"
+            android:layout_marginTop="5dp"
+            android:text="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" />
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>
