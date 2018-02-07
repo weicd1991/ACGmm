@@ -1,26 +1,63 @@
 package com.jsmy.acgmm.activity;
 
+import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jsmy.acgmm.MyApp;
 import com.jsmy.acgmm.R;
+import com.jsmy.acgmm.bean.Holo2Bean;
+import com.jsmy.acgmm.model.API;
+import com.jsmy.acgmm.model.NetWork;
+import com.jsmy.acgmm.service.DownVideoService;
+import com.jsmy.acgmm.util.CheckNetWork;
+import com.jsmy.acgmm.util.MyLog;
+import com.jsmy.acgmm.util.SPF;
+import com.jsmy.acgmm.util.ToastUtil;
+import com.universalvideoview.UniversalMediaController;
+import com.universalvideoview.UniversalVideoView;
 
 import org.json.JSONException;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class Holographic3Activity extends BaseActivity {
-
-    @BindView(R.id.my_img)
-    ImageView myImg;
+public class Holographic3Activity extends BaseActivity implements UniversalVideoView.VideoViewCallback, MediaPlayer.OnCompletionListener {
+    private static final String SEEK_POSITION_KEY = "SEEK_POSITION_KEY";
+    @BindView(R.id.videoView)
+    UniversalVideoView videoView;
+    @BindView(R.id.media_controller)
+    UniversalMediaController mediaController;
+    @BindView(R.id.video_layout)
+    FrameLayout videoLayout;
     @BindView(R.id.edit_sige)
     EditText editSige;
+    private int mSeekPosition;
+    private int cachedHeight;
+    private boolean isFullscreen;
+    private String dyid;
+    private String type;
+    private List<Holo2Bean.DataBean.ListBean> listB;
+    private int position = 0;
+    private String cid;
+    private String cword;
+    private String cnote;
+    private long sc;
+    private long startrSc;
+    private long endSc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +71,9 @@ public class Holographic3Activity extends BaseActivity {
 
     @Override
     protected void initView() {
+        videoView.setMediaController(mediaController);
+        videoView.setVideoViewCallback(this);
+        videoView.setOnCompletionListener(this);
         editSige.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -43,8 +83,8 @@ public class Holographic3Activity extends BaseActivity {
                 if (actionId == EditorInfo.IME_ACTION_SEND
                         || actionId == EditorInfo.IME_ACTION_DONE
                         || (event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode() && KeyEvent.ACTION_DOWN == event.getAction())) {
-                    //处理事件
-                    editSige.setText("");
+                    //处理回车事件
+                    completGame();
                 }
                 return false;
             }
@@ -53,12 +93,34 @@ public class Holographic3Activity extends BaseActivity {
 
     @Override
     protected void initData() {
-
+        dyid = getIntent().getStringExtra("id");
+        type = getIntent().getStringExtra("type");
+        NetWork.getdclist(SPF.getString(this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()), dyid, this);
     }
 
     @Override
     public void onSuccess(String type, String check, String code, String result, String msg) throws JSONException {
-
+        if ("Y".equals(code)) {
+            switch (type) {
+                case API.GET_DC_LIST:
+                    listB = gson.fromJson(result, Holo2Bean.class).getData().getList();
+                    if (CheckNetWork.getNetWorkType(Holographic3Activity.this) == CheckNetWork.NETWORKTYPE_WIFI)
+                        downloadFile();
+                    playGame();
+                    break;
+                case API.SAVE_DZ_INFO:
+                    ToastUtil.showShort(this, msg);
+                    if (position == listB.size() - 1) {
+                        ToastUtil.showShort(this, "已是最后一题！");
+                    } else {
+                        position++;
+                        playGame();
+                    }
+                    break;
+            }
+        } else {
+            ToastUtil.showShort(this, msg);
+        }
     }
 
     @Override
@@ -66,15 +128,222 @@ public class Holographic3Activity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.tv_befor, R.id.tv_next})
+    private void playGame() {
+        if (null != listB && listB.size() > 0 && position < listB.size()) {
+            if ("1".equals(type)) {
+                String url = listB.get(position).getCqxsp();
+                File file = new File(API.SAVA_DOC_PATH, url.substring(url.lastIndexOf("/") + 1));
+                if (file.exists()) {
+                    MyLog.showLog(TAG, "L" + file.getAbsolutePath());
+                    setVideoAreaSize(file.getAbsolutePath());
+                } else {
+                    MyLog.showLog(TAG, "N" + url);
+                    setVideoAreaSize(url);
+                }
+
+            } else {
+                String url = listB.get(position).getCsq();
+                File file = new File(API.SAVA_DOC_PATH, url.substring(url.lastIndexOf("/") + 1));
+                if (file.exists()) {
+                    MyLog.showLog(TAG, "L" + file.getAbsolutePath());
+                    setVideoAreaSize(file.getAbsolutePath());
+                } else {
+                    MyLog.showLog(TAG, "N" + url);
+                    setVideoAreaSize(url);
+                }
+            }
+            cid = listB.get(position).getCid();
+            cword = listB.get(position).getCword();
+            cnote = listB.get(position).getCnote();
+            startrSc = Calendar.getInstance().getTimeInMillis();
+            editSige.setFocusable(true);
+            editSige.setFocusableInTouchMode(true);
+        }
+    }
+
+    @Override
+    public void onScaleChange(boolean isFullscreen) {
+        this.isFullscreen = isFullscreen;
+        if (isFullscreen) {
+            ViewGroup.LayoutParams layoutParams = videoLayout.getLayoutParams();
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            videoLayout.setLayoutParams(layoutParams);
+            //设置全屏时,无关的View消失,以便为视频控件和控制器控件留出最大化的位置
+//            mBottomLayout.setVisibility(View.GONE);
+        } else {
+//            ViewGroup.LayoutParams layoutParams = videoLayout.getLayoutParams();
+//            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+//            layoutParams.height = this.cachedHeight;
+//            videoLayout.setLayoutParams(layoutParams);
+//            mBottomLayout.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    @Override
+    public void onStart(MediaPlayer mediaPlayer) {
+        mSeekPosition = videoView.getCurrentPosition();
+        // 视频开始播放或恢复播放
+        MyLog.showLog(TAG, "开始 = " + mSeekPosition);
+        mediaController.hideLoading();
+    }
+
+    @Override
+    public void onPause(MediaPlayer mediaPlayer) {
+        mSeekPosition = videoView.getCurrentPosition();
+        MyLog.showLog(TAG, "暂停 = " + mSeekPosition);
+        // 视频暂停
+        if (videoView != null && videoView.isPlaying()) {
+            videoView.pause();
+        }
+    }
+
+    @Override
+    public void onBufferingStart(MediaPlayer mediaPlayer) {
+        mSeekPosition = videoView.getCurrentPosition();
+        // 视频开始缓冲
+        MyLog.showLog(TAG, "开始缓冲 = " + mSeekPosition);
+    }
+
+    @Override
+    public void onBufferingEnd(MediaPlayer mediaPlayer) {
+        mSeekPosition = videoView.getCurrentPosition();
+        // 视频结束缓冲
+        MyLog.showLog(TAG, "结束缓冲 = " + mSeekPosition);
+    }
+
+    // 视频播放完成
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        mSeekPosition = videoView.getCurrentPosition();
+        MyLog.showLog(TAG, "播放结束 = " + mSeekPosition);
+        MyLog.showLog(TAG, " - position = " + position + " - ");
+//        if (position == listB.size() - 1) {
+//            ToastUtil.showShort(this, "已是最后一题！");
+//        } else {
+//            position++;
+//            playGame();
+//        }
+    }
+
+    private void completGame() {
+        if (cword.equalsIgnoreCase(editSige.getText().toString().trim())) {
+            endSc = Calendar.getInstance().getTimeInMillis();
+            sc = (endSc - startrSc) / 1000;
+            NetWork.savedzinfo(SPF.getString(Holographic3Activity.this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()), cid, sc + "", Holographic3Activity.this);
+            editSige.setText("");
+        } else {
+            ToastUtil.showShort(this, "回答错误！友情提示：" + cnote);
+        }
+    }
+
+    /**
+     * 播放视频
+     */
+    private void setVideoAreaSize(final String url) {
+        videoLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                if (videoView.isPlaying()) {
+                    videoView.pause();
+                    videoView.stopPlayback();
+                }
+                mediaController.showLoading();
+                videoView.setVideoPath(url);
+                videoView.start();
+            }
+        });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        MyLog.showLog(TAG, "onSaveInstanceState Position=" + videoView.getCurrentPosition());
+        outState.putInt(SEEK_POSITION_KEY, mSeekPosition);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle outState) {
+        super.onRestoreInstanceState(outState);
+        mSeekPosition = outState.getInt(SEEK_POSITION_KEY);
+        MyLog.showLog(TAG, "onRestoreInstanceState Position=" + mSeekPosition);
+    }
+
+    @OnClick({R.id.tv_befor, R.id.tv_next, R.id.img_back, R.id.img_tasto})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_befor:
-                editSige.setText("");
+                MyLog.showLog(TAG, " - position = " + position + " - ");
+                if (position == 0) {
+                    ToastUtil.showShort(this, "已是第一题！");
+                } else {
+                    position = position - 1;
+                    playGame();
+                }
                 break;
             case R.id.tv_next:
-                editSige.setText("");
+                MyLog.showLog(TAG, " - position = " + position + " - ");
+                if (position == listB.size() - 1) {
+                    ToastUtil.showShort(this, "已是最后一题！");
+                } else {
+                    position++;
+                    playGame();
+                }
                 break;
+            case R.id.img_back:
+                finish();
+                break;
+            case R.id.img_tasto:
+                goToWebView(this, API.HELP_CENTER + SPF.getString(this, "yhid", MyApp.getMyApp().bean.getYhid()) + "&&tid=" + listB.get(position).getCid());
+                break;
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_UP:
+                MyLog.showLog(TAG, " - position = " + position + " - ");
+                if (position == 0) {
+                    ToastUtil.showShort(this, "已是第一题！");
+                } else {
+                    position = position - 1;
+                    playGame();
+                }
+                return true;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                MyLog.showLog(TAG, " - position = " + position + " - ");
+                if (position == listB.size() - 1) {
+                    ToastUtil.showShort(this, "已是最后一题！");
+                } else {
+                    position++;
+                    playGame();
+                }
+                return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (videoView.isPlaying()) {
+            videoView.pause();
+            videoView.stopPlayback();
+        }
+        super.onBackPressed();
+    }
+
+    public void downloadFile() {
+        if (null != listB && listB.size() > 0) {
+            ArrayList<String> list = new ArrayList<>();
+            for (int i = 0; i < listB.size(); i++) {
+                list.add(listB.get(i).getCqxsp());
+                list.add(listB.get(i).getCsq());
+            }
+            Intent intent = new Intent(this, DownVideoService.class);
+            intent.putStringArrayListExtra("url", list);
+            startService(intent);
         }
     }
 }

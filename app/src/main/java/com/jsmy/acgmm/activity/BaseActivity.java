@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 
 import android.os.Bundle;
@@ -12,12 +13,14 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import com.google.gson.Gson;
+import com.jsmy.acgmm.model.API;
 import com.jsmy.acgmm.model.NetWork;
 import com.jsmy.acgmm.util.ActivityTack;
 import com.jsmy.acgmm.util.MyLog;
 import com.jsmy.acgmm.util.SPF;
 import com.umeng.analytics.MobclickAgent;
 
+import java.io.File;
 import java.util.Set;
 
 import butterknife.ButterKnife;
@@ -37,15 +40,6 @@ public abstract class BaseActivity extends FragmentActivity implements NetWork.C
         if (getContenView() != 0) {
             setContentView(getContenView());
         }
-//        if (Build.VERSION.SDK_INT >= 21) {
-//            View decorView = getWindow().getDecorView();
-//            int option = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-//            decorView.setSystemUiVisibility(option);
-//            getWindow().setNavigationBarColor(Color.TRANSPARENT);
-//            getWindow().setStatusBarColor(Color.TRANSPARENT);
-//        }
         ButterKnife.bind(this);
         ActivityTack.getInstanse().addActivity(this);
         JMessageClient.registerEventReceiver(this);
@@ -54,6 +48,10 @@ public abstract class BaseActivity extends FragmentActivity implements NetWork.C
         initData();
         TAG = getClass().getName();
         MyLog.showLog(TAG, getClass().getName());
+        File file = new File(API.SAVA_DOC_PATH);
+        if (!file.exists()){
+            file.mkdir();
+        }
     }
 
 
@@ -81,7 +79,7 @@ public abstract class BaseActivity extends FragmentActivity implements NetWork.C
          * @setMessage 设置对话框消息提示
          * setXXX方法返回Dialog对象，因此可以链式设置属性
          */
-        final AlertDialog.Builder normalDialog = new AlertDialog.Builder(this,AlertDialog.THEME_HOLO_LIGHT);
+        final AlertDialog.Builder normalDialog = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
         normalDialog.setTitle("下线提示:");
         normalDialog.setMessage("您的账号已经在另一台设备上登录，您被迫下线!");
         normalDialog.setCancelable(false);
@@ -237,9 +235,9 @@ public abstract class BaseActivity extends FragmentActivity implements NetWork.C
     }
 
     public void goToWebView(Context context, String url) {
-        Intent intent = new Intent(context, WebViewActivity.class);
-        intent.putExtra("url", url);
-        context.startActivity(intent);
+        Uri uri = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
     }
 
     public static float getScreenWidth(Activity context) {

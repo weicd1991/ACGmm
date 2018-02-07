@@ -80,4 +80,6 @@ dependencies {
     compile 'com.flaviofaria:kenburnsview:1.0.7'
     //cameraview
     compile project(':camerajar')
+    //微信
+    compile 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
 }

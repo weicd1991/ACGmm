@@ -13,6 +13,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jsmy.acgmm.R;
 import com.jsmy.acgmm.activity.Holographic1Activity;
 import com.jsmy.acgmm.activity.Holographic2Activity;
+import com.jsmy.acgmm.activity.Holographic3Activity;
 import com.jsmy.acgmm.bean.Holo1Bean;
 
 import java.util.List;
@@ -56,7 +57,7 @@ public class Holographic1Adapter extends RecyclerView.Adapter<Holographic1Adapte
         holder.tvPm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, Holographic2Activity.class);
+                Intent intent = new Intent(context, Holographic3Activity.class);
                 intent.putExtra("type", "2");
                 intent.putExtra("id", list.get(position).getDyid());
                 context.startActivity(intent);

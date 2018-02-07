@@ -11,9 +11,15 @@ import com.jsmy.acgmm.util.SPF;
 
 public class API {
     //文档路径
-    public static final String SAVA_DOC_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/acgmmfile/";
+    public static final String SAVA_DOC_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.acgmmfile/";
     public static final String HEAD_IMG_NAME = "head.png";
     public static final String WALL_IMG_NAME = "wall.png";
+
+    //微信
+    public static final String WEIXIN_APP_ID = "wx8f83019f87050499";
+    public static final String WEIXIN_APP_SECRET = "225e79585f29cdb599c6bedb1621ad4d";
+    public static final String WEIXIN_OAUTH2 = "https://api.weixin.qq.com/sns/oauth2/access_token?";
+    public static final String WEIXIN_USERINFO = "https://api.weixin.qq.com/sns/userinfo?";
 
     //内网
     public static final String BASE_URL_NEI = "http://192.168.3.170:8080/dmmm/";
@@ -29,6 +35,13 @@ public class API {
 //            return BASE_URL_NEI;
         }
     }
+
+    public static final String ABOUT_US = BASE_URL_WAI + "tapp!aboutme.do?yhid=";
+    public static final String FEED_BACK = BASE_URL_WAI + "tapp!yjfk.do?yhid=";
+    public static final String SHARE_REGISTER = BASE_URL_WAI + "page/apppage/downapp.html";
+    public static final String HELP_CENTER = BASE_URL_WAI + "tapp!help.do?yhid=";
+    public static final String NITICE_CENTER = BASE_URL_WAI + "tapp!notice.do?yhid=";
+    public static final String SHARE_VIDEO = BASE_URL_WAI + "tapp!sharedm.do?yhid=";
 
     //1注册
     public static final String SAVE_REGISTER = "jsmybase/saveregister.do";

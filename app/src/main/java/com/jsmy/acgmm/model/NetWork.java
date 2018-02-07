@@ -124,23 +124,36 @@ public class NetWork {
                     ToastUtil.showShort(MyApp.getMyApp(), "404 - 请检查后台服务开启状态或切换服务器在尝试");
                     return;
                 }
-                try {
-                    MyLog.showLog(getClass().getName(), "*****请求成功****" + response.toString());
-                    MyLog.showLog(getClass().getName(), "*****返回数据****" + response.body());
-                    String result = new String(response.body());
-                    JSONObject jsonObject = new JSONObject(result);
-                    String code = jsonObject.optString("code");
-                    String msg = jsonObject.optString("msg");
-                    String check = jsonObject.optString("check");
-                    if (callListener != null) {
-                        callListener.onSuccess(url, check, code, result, msg);
-                    } else {
-                        MyLog.showLog(getClass().getName(), "*****监听器为空****");
+                MyLog.showLog(getClass().getName(), "*****请求成功****" + response.toString());
+                MyLog.showLog(getClass().getName(), "*****返回数据****" + response.body());
+                if (url.contains(API.WEIXIN_OAUTH2) || url.contains(API.WEIXIN_USERINFO)) {
+                    try {
+                        String result = new String(response.body());
+                        if (callListener != null) {
+                            callListener.onSuccess(url, "Y", "Y", result, "请求成功");
+                        } else {
+                            MyLog.showLog(getClass().getName(), "*****监听器为空****");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } else {
+                    try {
+                        String result = new String(response.body());
+                        JSONObject jsonObject = new JSONObject(result);
+                        String code = jsonObject.optString("code");
+                        String msg = jsonObject.optString("msg");
+                        String check = jsonObject.optString("check");
+                        if (callListener != null) {
+                            callListener.onSuccess(url, check, code, result, msg);
+                        } else {
+                            MyLog.showLog(getClass().getName(), "*****监听器为空****");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -280,6 +293,7 @@ public class NetWork {
                         public void run() {
                             boolean writtenToDisk = writeResponseBodyToDisk(response.body(), url);
                             if (writtenToDisk) {
+                                MyLog.showLog(getClass().getName(), "下载成功 - ");
                                 if (callListener != null) {
                                     try {
                                         callListener.onSuccess(type, "N", "Y", "Y", "下载成功！");
@@ -288,6 +302,7 @@ public class NetWork {
                                     }
                                 }
                             } else {
+                                MyLog.showLog(getClass().getName(), " 下载失败- ");
                                 try {
                                     callListener.onSuccess(type, "N", "N", "Y", "下载失败，请重试！");
                                 } catch (JSONException e) {
@@ -305,6 +320,7 @@ public class NetWork {
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
+                MyLog.showLog(getClass().getName(), " - " + t.getMessage());
                 if (callListener != null) {
                     callListener.onFailure(type, t.toString());
                 }
@@ -320,7 +336,7 @@ public class NetWork {
             InputStream inputStream = null;
             OutputStream outputStream = null;
             try {
-                byte[] fileReader = new byte[8 * 1024];
+                byte[] fileReader = new byte[1024];
                 long fileSize = body.contentLength();
                 long fileSizeDownloaded = 0;
                 inputStream = body.byteStream();
@@ -649,6 +665,18 @@ public class NetWork {
         map.put("pageindex", pageindex);
         map.put("pagesize", pagesize);
         getNetVolue(API.GET_DZPH_LIST, map, callListener);
+    }
+
+    //微信授权
+    public static void getWeiXinOauth(String url, CallListener callListener) {
+        Map<String, String> map = new HashMap<>();
+        getNetVolue(url, map, callListener);
+    }
+
+    //微信授权
+    public static void getWeiXinUserInfo(String url, CallListener callListener) {
+        Map<String, String> map = new HashMap<>();
+        getNetVolue(url, map, callListener);
     }
 
 }

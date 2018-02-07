@@ -50,8 +50,9 @@
             android:id="@+id/tv_qx"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/img_f"
+            android:layout_alignBottom="@+id/img_f"
+            android:layout_toLeftOf="@+id/tv_pm"
+            android:layout_marginRight="20dp"
             android:text="全息模式"
             android:textSize="15sp"
             android:textColor="@color/colorAccent"/>

@@ -49,8 +49,6 @@ import butterknife.Unbinder;
 
 public class MyFragment extends BaseFragment {
 
-    //    @BindView(R.id.img_wall)
-//    ImageView imgWall;
     @BindView(R.id.img_tx)
     CircleImageView imgTx;
     @BindView(R.id.tv_age)
@@ -61,7 +59,6 @@ public class MyFragment extends BaseFragment {
     TextView tvSige;
     @BindView(R.id.tv_sex)
     TextView tvSex;
-    Unbinder unbinder;
     @BindView(R.id.fragment_my)
     ScrollView fragmentMy;
     @BindView(R.id.img_wall)
@@ -72,6 +69,7 @@ public class MyFragment extends BaseFragment {
     private List<SchoolBean.DataBean.ListBean> listSchool;
     private String[] itemSchool;
     private String xx = "";
+    Unbinder unbinder;
 
     @Nullable
     @Override

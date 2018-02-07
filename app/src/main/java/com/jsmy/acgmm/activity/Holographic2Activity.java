@@ -1,5 +1,6 @@
 package com.jsmy.acgmm.activity;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -9,6 +10,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.jsmy.acgmm.MyApp;
@@ -16,6 +18,8 @@ import com.jsmy.acgmm.R;
 import com.jsmy.acgmm.bean.Holo2Bean;
 import com.jsmy.acgmm.model.API;
 import com.jsmy.acgmm.model.NetWork;
+import com.jsmy.acgmm.service.DownVideoService;
+import com.jsmy.acgmm.util.CheckNetWork;
 import com.jsmy.acgmm.util.MyLog;
 import com.jsmy.acgmm.util.SPF;
 import com.jsmy.acgmm.util.ToastUtil;
@@ -24,6 +28,8 @@ import com.universalvideoview.UniversalVideoView;
 
 import org.json.JSONException;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -40,10 +46,6 @@ public class Holographic2Activity extends BaseActivity implements UniversalVideo
     FrameLayout videoLayout;
     @BindView(R.id.edit_sige)
     EditText editSige;
-    @BindView(R.id.rela_play)
-    RelativeLayout relaPlay;
-    @BindView(R.id.tv_next)
-    TextView tvNext;
     private int mSeekPosition;
     private int cachedHeight;
     private boolean isFullscreen;
@@ -107,6 +109,8 @@ public class Holographic2Activity extends BaseActivity implements UniversalVideo
             switch (type) {
                 case API.GET_DC_LIST:
                     listB = gson.fromJson(result, Holo2Bean.class).getData().getList();
+                    if (CheckNetWork.getNetWorkType(Holographic2Activity.this) == CheckNetWork.NETWORKTYPE_WIFI)
+                        downloadFile();
                     playGame();
                     break;
                 case API.SAVE_DZ_INFO:
@@ -132,9 +136,26 @@ public class Holographic2Activity extends BaseActivity implements UniversalVideo
     private void playGame() {
         if (null != listB && listB.size() > 0 && position < listB.size()) {
             if ("1".equals(type)) {
-                setVideoAreaSize(listB.get(position).getCqxsp());
+                String url = listB.get(position).getCqxsp();
+                File file = new File(API.SAVA_DOC_PATH, url.substring(url.lastIndexOf("/") + 1));
+                if (file.exists()) {
+                    MyLog.showLog(TAG, "L" + file.getAbsolutePath());
+                    setVideoAreaSize(file.getAbsolutePath());
+                } else {
+                    MyLog.showLog(TAG, "N" + url);
+                    setVideoAreaSize(url);
+                }
+
             } else {
-                setVideoAreaSize(listB.get(position).getCsq());
+                String url = listB.get(position).getCsq();
+                File file = new File(API.SAVA_DOC_PATH, url.substring(url.lastIndexOf("/") + 1));
+                if (file.exists()) {
+                    MyLog.showLog(TAG, "L" + file.getAbsolutePath());
+                    setVideoAreaSize(file.getAbsolutePath());
+                } else {
+                    MyLog.showLog(TAG, "N" + url);
+                    setVideoAreaSize(url);
+                }
             }
             cid = listB.get(position).getCid();
             cword = listB.get(position).getCword();
@@ -170,6 +191,7 @@ public class Holographic2Activity extends BaseActivity implements UniversalVideo
         mSeekPosition = videoView.getCurrentPosition();
         // 视频开始播放或恢复播放
         MyLog.showLog(TAG, "开始 = " + mSeekPosition);
+        mediaController.hideLoading();
     }
 
     @Override
@@ -211,7 +233,7 @@ public class Holographic2Activity extends BaseActivity implements UniversalVideo
     }
 
     private void completGame() {
-        if (cword.equals(editSige.getText().toString().trim())) {
+        if (cword.equalsIgnoreCase(editSige.getText().toString().trim())) {
             endSc = Calendar.getInstance().getTimeInMillis();
             sc = (endSc - startrSc) / 1000;
             NetWork.savedzinfo(SPF.getString(Holographic2Activity.this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()), cid, sc + "", Holographic2Activity.this);
@@ -228,20 +250,12 @@ public class Holographic2Activity extends BaseActivity implements UniversalVideo
         videoLayout.post(new Runnable() {
             @Override
             public void run() {
-//                int width = videoLayout.getWidth();
-//                cachedHeight = (int) (width * 405f / 720f);
-//                cachedHeight = (int) (width * 3f / 4f);
-//                cachedHeight = (int) (width * 9f / 16f);
-//                ViewGroup.LayoutParams videoLayoutParams = videoLayout.getLayoutParams();
-//                videoLayoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-//                videoLayoutParams.height = cachedHeight;
-//                videoLayout.setLayoutParams(videoLayoutParams);
                 if (videoView.isPlaying()) {
                     videoView.pause();
                     videoView.stopPlayback();
                 }
+                mediaController.showLoading();
                 videoView.setVideoPath(url);
-//                videoView.requestFocus();
                 videoView.start();
             }
         });
@@ -261,7 +275,7 @@ public class Holographic2Activity extends BaseActivity implements UniversalVideo
         MyLog.showLog(TAG, "onRestoreInstanceState Position=" + mSeekPosition);
     }
 
-    @OnClick({R.id.tv_befor, R.id.tv_next})
+    @OnClick({R.id.tv_befor, R.id.tv_next, R.id.img_back, R.id.img_tasto})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_befor:
@@ -281,6 +295,12 @@ public class Holographic2Activity extends BaseActivity implements UniversalVideo
                     position++;
                     playGame();
                 }
+                break;
+            case R.id.img_back:
+                finish();
+                break;
+            case R.id.img_tasto:
+                goToWebView(this, API.HELP_CENTER + SPF.getString(this, "yhid", MyApp.getMyApp().bean.getYhid()) + "&&tid=" + listB.get(position).getCid());
                 break;
         }
     }
@@ -318,4 +338,18 @@ public class Holographic2Activity extends BaseActivity implements UniversalVideo
         }
         super.onBackPressed();
     }
+
+    public void downloadFile() {
+        if (null != listB && listB.size() > 0) {
+            ArrayList<String> list = new ArrayList<>();
+            for (int i = 0; i < listB.size(); i++) {
+                list.add(listB.get(i).getCqxsp());
+                list.add(listB.get(i).getCsq());
+            }
+            Intent intent = new Intent(this, DownVideoService.class);
+            intent.putStringArrayListExtra("url", list);
+            startService(intent);
+        }
+    }
+
 }

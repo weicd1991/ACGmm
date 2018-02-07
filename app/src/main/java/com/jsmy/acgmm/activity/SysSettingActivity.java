@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.jsmy.acgmm.MyApp;
 import com.jsmy.acgmm.R;
 import com.jsmy.acgmm.bean.VersionBean;
 import com.jsmy.acgmm.model.API;
@@ -89,13 +90,13 @@ public class SysSettingActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.rela_forback:
-                goToWebView(this, "https://www.baidu.com");
+                goToWebView(this, API.FEED_BACK + SPF.getString(this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()));
                 break;
             case R.id.rela_aboutus:
-                goToWebView(this, "https://www.baidu.com");
+                goToWebView(this, API.ABOUT_US + SPF.getString(this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()));
                 break;
             case R.id.rela_useinfo:
-                goToWebView(this, "https://www.baidu.com");
+                goToWebView(this, API.NITICE_CENTER + SPF.getString(this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()));
                 break;
             case R.id.rela_psd:
                 startActivity(new Intent(this, ChangePsdActivity.class));
@@ -121,7 +122,7 @@ public class SysSettingActivity extends BaseActivity {
 
     private void showCacheDialog(String cache) {
         final AlertDialog.Builder normalDialog =
-                new AlertDialog.Builder(SysSettingActivity.this,AlertDialog.THEME_HOLO_LIGHT);
+                new AlertDialog.Builder(SysSettingActivity.this, AlertDialog.THEME_HOLO_LIGHT);
         normalDialog.setTitle("当前缓存" + cache);
         normalDialog.setMessage("确定要清除缓存吗？");
         normalDialog.setPositiveButton("确定",
@@ -145,7 +146,7 @@ public class SysSettingActivity extends BaseActivity {
 
     private void showVersionDialog() {
         final AlertDialog.Builder normalDialog =
-                new AlertDialog.Builder(SysSettingActivity.this,AlertDialog.THEME_HOLO_LIGHT);
+                new AlertDialog.Builder(SysSettingActivity.this, AlertDialog.THEME_HOLO_LIGHT);
         normalDialog.setTitle("更新至" + bean.getVersionname());
         normalDialog.setMessage(bean.getVermsg());
         normalDialog.setPositiveButton("确定",

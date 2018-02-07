@@ -7,16 +7,21 @@ import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jsmy.acgmm.MyApp;
 import com.jsmy.acgmm.R;
 import com.jsmy.acgmm.adapter.Holographic1Adapter;
+import com.jsmy.acgmm.bean.BookBean;
 import com.jsmy.acgmm.bean.Holo1Bean;
+import com.jsmy.acgmm.bean.NianJiBean;
+import com.jsmy.acgmm.bean.SchoolBean;
 import com.jsmy.acgmm.model.API;
 import com.jsmy.acgmm.model.NetWork;
 import com.jsmy.acgmm.util.SPF;
 import com.jsmy.acgmm.util.ToastUtil;
+import com.jsmy.acgmm.view.ChiosePopWindow;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
@@ -42,10 +47,15 @@ public class Holographic1Activity extends BaseActivity {
     SmartRefreshLayout refreshLayout;
     @BindView(R.id.tv_back)
     TextView tvBack;
+    @BindView(R.id.rela_tittle)
+    RelativeLayout relaTittle;
     private List<Holo1Bean.DataBean.ListBean> listH;
     private List<Holo1Bean.DataBean.ListBean> list;
     private Holographic1Adapter adapter;
     private int pageindex = 1;
+
+    private List<NianJiBean.DataBean.ListBean> listNianJi;
+    private List<BookBean.DataBean.ListBean> listBook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +69,7 @@ public class Holographic1Activity extends BaseActivity {
 
     @Override
     protected void initView() {
-        tvBack.setText("首页");
+        tvBack.setText("我的");
         tvTitle.setText("全息学英语");
         tvCheck.setText("教材");
         tvCheck.setVisibility(View.VISIBLE);
@@ -90,6 +100,9 @@ public class Holographic1Activity extends BaseActivity {
     @Override
     protected void initData() {
         NetWork.getmyqxjclist(SPF.getString(this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()), pageindex + "", "10", this);
+        NetWork.getnjlist(SPF.getString(this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()), this);
+        listNianJi = new ArrayList<>();
+        listBook = new ArrayList<>();
     }
 
     @Override
@@ -104,12 +117,43 @@ public class Holographic1Activity extends BaseActivity {
                         handler.sendEmptyMessage(102);
                     }
                     break;
+                case API.GET_NJ_LIST:
+                    listNianJi.clear();
+                    listNianJi.addAll(gson.fromJson(result, NianJiBean.class).getData().getList());
+                    break;
+                case API.GET_JC_LIST:
+                    listBook.clear();
+                    listBook.addAll(gson.fromJson(result, BookBean.class).getData().getList());
+                    if (chiosePopWindow != null)
+                        chiosePopWindow.showBook();
+                    break;
+                case API.SAVE_XZJC_INFO:
+                    NetWork.getmyqxjclist(SPF.getString(this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()), pageindex + "", "10", this);
+                    break;
             }
 
         } else {
-            refreshLayout.finishRefresh();
-            refreshLayout.finishLoadmore();
-            ToastUtil.showShort(this, msg);
+            switch (type) {
+                case API.GET_JC_LIST:
+                    listBook.clear();
+                    listBook.addAll(gson.fromJson(result, BookBean.class).getData().getList());
+                    if (chiosePopWindow != null)
+                        chiosePopWindow.showBook();
+                    break;
+                case API.GET_MYQX_JCLIST:
+                    listH = gson.fromJson(result, Holo1Bean.class).getData().getList();
+                    if (pageindex == 1) {
+                        handler.sendEmptyMessage(101);
+                    } else {
+                        handler.sendEmptyMessage(102);
+                    }
+                    break;
+                default:
+                    ToastUtil.showShort(this, msg);
+                    break;
+            }
+
+
         }
 
     }
@@ -123,11 +167,10 @@ public class Holographic1Activity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_back:
-                startActivity(new Intent(this, MainActivity.class));
-                this.finish();
+                startActivity(new Intent(this, MyActivity.class));
                 break;
             case R.id.tv_check:
-                startActivityForResult(new Intent(this, ChioseBookActivity.class), 1001);
+                showChiosePopWindow();
                 break;
         }
     }
@@ -154,4 +197,18 @@ public class Holographic1Activity extends BaseActivity {
         pageindex = 1;
         NetWork.getmyqxjclist(SPF.getString(Holographic1Activity.this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()), pageindex + "", "10", Holographic1Activity.this);
     }
+
+    private ChiosePopWindow chiosePopWindow;
+
+    public void showChiosePopWindow() {
+        if (chiosePopWindow == null)
+            chiosePopWindow = new ChiosePopWindow(this, listNianJi, listBook);
+
+        if (!chiosePopWindow.isShowing()) {
+            chiosePopWindow.showAsDropDown(relaTittle);
+        } else {
+            chiosePopWindow.dismiss();
+        }
+    }
+
 }
