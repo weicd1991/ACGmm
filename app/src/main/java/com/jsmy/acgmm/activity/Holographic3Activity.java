@@ -1,15 +1,21 @@
 package com.jsmy.acgmm.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jsmy.acgmm.MyApp;
@@ -22,6 +28,7 @@ import com.jsmy.acgmm.util.CheckNetWork;
 import com.jsmy.acgmm.util.MyLog;
 import com.jsmy.acgmm.util.SPF;
 import com.jsmy.acgmm.util.ToastUtil;
+import com.jsmy.acgmm.util.UtilsTools;
 import com.universalvideoview.UniversalMediaController;
 import com.universalvideoview.UniversalVideoView;
 
@@ -45,6 +52,8 @@ public class Holographic3Activity extends BaseActivity implements UniversalVideo
     FrameLayout videoLayout;
     @BindView(R.id.edit_sige)
     EditText editSige;
+    @BindView(R.id.activity_holographic3)
+    RelativeLayout activityHolographic3;
     private int mSeekPosition;
     private int cachedHeight;
     private boolean isFullscreen;
@@ -109,7 +118,6 @@ public class Holographic3Activity extends BaseActivity implements UniversalVideo
                     playGame();
                     break;
                 case API.SAVE_DZ_INFO:
-                    ToastUtil.showShort(this, msg);
                     if (position == listB.size() - 1) {
                         ToastUtil.showShort(this, "已是最后一题！");
                     } else {
@@ -130,34 +138,44 @@ public class Holographic3Activity extends BaseActivity implements UniversalVideo
 
     private void playGame() {
         if (null != listB && listB.size() > 0 && position < listB.size()) {
-            if ("1".equals(type)) {
-                String url = listB.get(position).getCqxsp();
-                File file = new File(API.SAVA_DOC_PATH, url.substring(url.lastIndexOf("/") + 1));
-                if (file.exists()) {
-                    MyLog.showLog(TAG, "L" + file.getAbsolutePath());
-                    setVideoAreaSize(file.getAbsolutePath());
+            if ("Y".equals(listB.get(position).getIswc())) {
+                MyLog.showLog(TAG, " - position = " + position + " - ");
+                if (position == listB.size() - 1) {
+                    ToastUtil.showShort(this, "已是最后一题！");
                 } else {
-                    MyLog.showLog(TAG, "N" + url);
-                    setVideoAreaSize(url);
+                    position++;
+                    playGame();
                 }
-
             } else {
-                String url = listB.get(position).getCsq();
-                File file = new File(API.SAVA_DOC_PATH, url.substring(url.lastIndexOf("/") + 1));
-                if (file.exists()) {
-                    MyLog.showLog(TAG, "L" + file.getAbsolutePath());
-                    setVideoAreaSize(file.getAbsolutePath());
+                if ("1".equals(type)) {
+                    String url = listB.get(position).getCqxsp();
+                    File file = new File(API.SAVA_DOC_PATH, url.substring(url.lastIndexOf("/") + 1));
+                    if (file.exists()) {
+                        MyLog.showLog(TAG, "L" + file.getAbsolutePath());
+                        setVideoAreaSize(file.getAbsolutePath());
+                    } else {
+                        MyLog.showLog(TAG, "N" + url);
+                        setVideoAreaSize(url);
+                    }
+
                 } else {
-                    MyLog.showLog(TAG, "N" + url);
-                    setVideoAreaSize(url);
+                    String url = listB.get(position).getCsq();
+                    File file = new File(API.SAVA_DOC_PATH, url.substring(url.lastIndexOf("/") + 1));
+                    if (file.exists()) {
+                        MyLog.showLog(TAG, "L" + file.getAbsolutePath());
+                        setVideoAreaSize(file.getAbsolutePath());
+                    } else {
+                        MyLog.showLog(TAG, "N" + url);
+                        setVideoAreaSize(url);
+                    }
                 }
+                cid = listB.get(position).getCid();
+                cword = listB.get(position).getCword();
+                cnote = listB.get(position).getCnote();
+                startrSc = Calendar.getInstance().getTimeInMillis();
+                editSige.setFocusable(true);
+                editSige.setFocusableInTouchMode(true);
             }
-            cid = listB.get(position).getCid();
-            cword = listB.get(position).getCword();
-            cnote = listB.get(position).getCnote();
-            startrSc = Calendar.getInstance().getTimeInMillis();
-            editSige.setFocusable(true);
-            editSige.setFocusableInTouchMode(true);
         }
     }
 
@@ -233,8 +251,9 @@ public class Holographic3Activity extends BaseActivity implements UniversalVideo
             sc = (endSc - startrSc) / 1000;
             NetWork.savedzinfo(SPF.getString(Holographic3Activity.this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()), cid, sc + "", Holographic3Activity.this);
             editSige.setText("");
+            scakeView(true);
         } else {
-            ToastUtil.showShort(this, "回答错误！友情提示：" + cnote);
+            scakeView(false);
         }
     }
 
@@ -270,7 +289,7 @@ public class Holographic3Activity extends BaseActivity implements UniversalVideo
         MyLog.showLog(TAG, "onRestoreInstanceState Position=" + mSeekPosition);
     }
 
-    @OnClick({R.id.tv_befor, R.id.tv_next, R.id.img_back, R.id.img_tasto})
+    @OnClick({R.id.tv_befor, R.id.tv_next, R.id.img_back, R.id.img_tasto,R.id.tv_check})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_befor:
@@ -296,6 +315,9 @@ public class Holographic3Activity extends BaseActivity implements UniversalVideo
                 break;
             case R.id.img_tasto:
                 goToWebView(this, API.HELP_CENTER + SPF.getString(this, "yhid", MyApp.getMyApp().bean.getYhid()) + "&&tid=" + listB.get(position).getCid());
+                break;
+            case R.id.tv_check:
+                completGame();
                 break;
         }
     }
@@ -345,5 +367,39 @@ public class Holographic3Activity extends BaseActivity implements UniversalVideo
             intent.putStringArrayListExtra("url", list);
             startService(intent);
         }
+    }
+
+    private void scakeView(boolean isRight) {
+        final ImageView img = new ImageView(this);
+        if (isRight) {
+            img.setImageResource(R.drawable.right_anser);
+        } else {
+            img.setImageResource(R.drawable.wrong_anser);
+        }
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(UtilsTools.dip2px(this, 70), UtilsTools.dip2px(this, 70));
+        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+        img.setLayoutParams(params);
+        activityHolographic3.addView(img);
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(img, "alpha", 0.2f, 1f);
+        alpha.setDuration(1000);
+        alpha.setRepeatCount(0);
+        alpha.setInterpolator(new AccelerateInterpolator());
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(img, "scaleX", 0.2f, 8f);
+        scaleX.setDuration(1000);
+        scaleX.setRepeatCount(0);
+        scaleX.setInterpolator(new AccelerateInterpolator());
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(img, "scaleY", 0.2f, 8f);
+        scaleY.setDuration(1000);
+        scaleY.setRepeatCount(0);
+        scaleY.setInterpolator(new AccelerateInterpolator());
+        AnimatorSet set1 = new AnimatorSet();
+        set1.play(scaleX).with(scaleY).with(alpha);
+        set1.start();
+        scaleX.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                activityHolographic3.removeView(img);
+            }
+        });
     }
 }

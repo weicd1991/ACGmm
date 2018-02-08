@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_holographic3"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,17 +17,17 @@
 
         <com.universalvideoview.UniversalVideoView
             android:id="@+id/videoView"
-            app:uvv_autoRotation="false"
-            app:uvv_fitXY="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            app:uvv_autoRotation="false"
+            app:uvv_fitXY="false" />
 
         <com.universalvideoview.UniversalMediaController
             android:id="@+id/media_controller"
-            app:uvv_scalable="false"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:uvv_scalable="false" />
 
     </FrameLayout>
 
@@ -37,42 +37,60 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
-        <EditText
-            android:id="@+id/edit_sige"
+        <LinearLayout
+            android:id="@+id/linear_edit"
             android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_centerHorizontal="true"
-            android:background="#FFFFFF"
-            android:digits="AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
-            android:imeOptions="flagNoExtractUi|actionDone"
-            android:inputType="textVisiblePassword"
-            android:minWidth="200dp"
-            android:text=""
-            android:textColor="#000000"
-            android:textCursorDrawable="@null"
-            android:textSize="15sp" />
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edit_sige"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:background="#FFFFFF"
+                android:digits="AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:imeOptions="flagNoExtractUi|actionDone"
+                android:inputType="textVisiblePassword"
+                android:minWidth="150dp"
+                android:text=""
+                android:textColor="#000000"
+                android:textCursorDrawable="@null"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_check"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:background="#A2CBF8"
+                android:gravity="center"
+                android:text="提交"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp" />
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/tv_befor"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_alignTop="@+id/edit_sige"
+            android:layout_alignTop="@+id/linear_edit"
             android:layout_centerVertical="true"
             android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@+id/edit_sige"
+            android:layout_toLeftOf="@+id/linear_edit"
             android:src="@drawable/left_button" />
 
         <ImageView
             android:id="@+id/tv_next"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_alignTop="@+id/edit_sige"
+            android:layout_alignTop="@+id/linear_edit"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/edit_sige"
+            android:layout_toRightOf="@+id/linear_edit"
             android:src="@drawable/right_button" />
 
     </RelativeLayout>
