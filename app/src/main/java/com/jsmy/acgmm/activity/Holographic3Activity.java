@@ -4,9 +4,13 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -115,10 +119,21 @@ public class Holographic3Activity extends BaseActivity implements UniversalVideo
                     listB = gson.fromJson(result, Holo2Bean.class).getData().getList();
                     if (CheckNetWork.getNetWorkType(Holographic3Activity.this) == CheckNetWork.NETWORKTYPE_WIFI)
                         downloadFile();
-                    playGame();
+                    for (int i = 0; i < listB.size(); i++) {
+                        if ("Y".equals(listB.get(i).getIswc())) {
+                            if (i == listB.size() - 1) {
+                                showFinishDialog();
+                            }
+                        } else {
+                            position = i;
+                            playGame();
+                            break;
+                        }
+                    }
                     break;
                 case API.SAVE_DZ_INFO:
                     if (position == listB.size() - 1) {
+                        showFinishDialog();
                         ToastUtil.showShort(this, "已是最后一题！");
                     } else {
                         position++;
@@ -138,44 +153,34 @@ public class Holographic3Activity extends BaseActivity implements UniversalVideo
 
     private void playGame() {
         if (null != listB && listB.size() > 0 && position < listB.size()) {
-            if ("Y".equals(listB.get(position).getIswc())) {
-                MyLog.showLog(TAG, " - position = " + position + " - ");
-                if (position == listB.size() - 1) {
-                    ToastUtil.showShort(this, "已是最后一题！");
+            if ("1".equals(type)) {
+                String url = listB.get(position).getCqxsp();
+                File file = new File(API.SAVA_DOC_PATH, url.substring(url.lastIndexOf("/") + 1));
+                if (file.exists()) {
+                    MyLog.showLog(TAG, "L" + file.getAbsolutePath());
+                    setVideoAreaSize(file.getAbsolutePath());
                 } else {
-                    position++;
-                    playGame();
+                    MyLog.showLog(TAG, "N" + url);
+                    setVideoAreaSize(url);
                 }
-            } else {
-                if ("1".equals(type)) {
-                    String url = listB.get(position).getCqxsp();
-                    File file = new File(API.SAVA_DOC_PATH, url.substring(url.lastIndexOf("/") + 1));
-                    if (file.exists()) {
-                        MyLog.showLog(TAG, "L" + file.getAbsolutePath());
-                        setVideoAreaSize(file.getAbsolutePath());
-                    } else {
-                        MyLog.showLog(TAG, "N" + url);
-                        setVideoAreaSize(url);
-                    }
 
+            } else {
+                String url = listB.get(position).getCsq();
+                File file = new File(API.SAVA_DOC_PATH, url.substring(url.lastIndexOf("/") + 1));
+                if (file.exists()) {
+                    MyLog.showLog(TAG, "L" + file.getAbsolutePath());
+                    setVideoAreaSize(file.getAbsolutePath());
                 } else {
-                    String url = listB.get(position).getCsq();
-                    File file = new File(API.SAVA_DOC_PATH, url.substring(url.lastIndexOf("/") + 1));
-                    if (file.exists()) {
-                        MyLog.showLog(TAG, "L" + file.getAbsolutePath());
-                        setVideoAreaSize(file.getAbsolutePath());
-                    } else {
-                        MyLog.showLog(TAG, "N" + url);
-                        setVideoAreaSize(url);
-                    }
+                    MyLog.showLog(TAG, "N" + url);
+                    setVideoAreaSize(url);
                 }
-                cid = listB.get(position).getCid();
-                cword = listB.get(position).getCword();
-                cnote = listB.get(position).getCnote();
-                startrSc = Calendar.getInstance().getTimeInMillis();
-                editSige.setFocusable(true);
-                editSige.setFocusableInTouchMode(true);
             }
+            cid = listB.get(position).getCid();
+            cword = listB.get(position).getCword();
+            cnote = listB.get(position).getCnote();
+            startrSc = Calendar.getInstance().getTimeInMillis();
+            editSige.setFocusable(true);
+            editSige.setFocusableInTouchMode(true);
         }
     }
 
@@ -249,7 +254,6 @@ public class Holographic3Activity extends BaseActivity implements UniversalVideo
         if (cword.equalsIgnoreCase(editSige.getText().toString().trim())) {
             endSc = Calendar.getInstance().getTimeInMillis();
             sc = (endSc - startrSc) / 1000;
-            NetWork.savedzinfo(SPF.getString(Holographic3Activity.this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()), cid, sc + "", Holographic3Activity.this);
             editSige.setText("");
             scakeView(true);
         } else {
@@ -278,18 +282,38 @@ public class Holographic3Activity extends BaseActivity implements UniversalVideo
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        MyLog.showLog(TAG, "onSaveInstanceState Position=" + videoView.getCurrentPosition());
+        MyLog.showLog(TAG, "onSaveInstanceState Position = " + videoView.getCurrentPosition());
         outState.putInt(SEEK_POSITION_KEY, mSeekPosition);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MyLog.showLog(TAG, "onPause = " + mSeekPosition);
+        if (videoView != null && videoView.isPlaying()) {
+            videoView.pause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MyLog.showLog(TAG, "onResume = " + mSeekPosition);
+        if (mSeekPosition != 0 && videoView != null) {
+            videoView.seekTo(mSeekPosition);
+            videoView.resume();
+            videoView.start();
+        }
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle outState) {
         super.onRestoreInstanceState(outState);
+        MyLog.showLog(TAG, "onRestoreInstanceState Position = " + mSeekPosition);
         mSeekPosition = outState.getInt(SEEK_POSITION_KEY);
-        MyLog.showLog(TAG, "onRestoreInstanceState Position=" + mSeekPosition);
     }
 
-    @OnClick({R.id.tv_befor, R.id.tv_next, R.id.img_back, R.id.img_tasto,R.id.tv_check})
+    @OnClick({R.id.tv_befor, R.id.tv_next, R.id.img_back, R.id.img_tasto, R.id.tv_check})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_befor:
@@ -297,7 +321,7 @@ public class Holographic3Activity extends BaseActivity implements UniversalVideo
                 if (position == 0) {
                     ToastUtil.showShort(this, "已是第一题！");
                 } else {
-                    position = position - 1;
+                    position--;
                     playGame();
                 }
                 break;
@@ -369,7 +393,7 @@ public class Holographic3Activity extends BaseActivity implements UniversalVideo
         }
     }
 
-    private void scakeView(boolean isRight) {
+    private void scakeView(final boolean isRight) {
         final ImageView img = new ImageView(this);
         if (isRight) {
             img.setImageResource(R.drawable.right_anser);
@@ -399,7 +423,40 @@ public class Holographic3Activity extends BaseActivity implements UniversalVideo
             @Override
             public void onAnimationEnd(Animator animation) {
                 activityHolographic3.removeView(img);
+                if (isRight){
+                    NetWork.savedzinfo(SPF.getString(Holographic3Activity.this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()), cid, sc + "", Holographic3Activity.this);
+                }
             }
         });
     }
+
+    public void showFinishDialog() {
+        /* @setIcon 设置对话框图标
+         * @setTitle 设置对话框标题
+         * @setMessage 设置对话框消息提示
+         * setXXX方法返回Dialog对象，因此可以链式设置属性
+         */
+        final AlertDialog.Builder normalDialog = new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT);
+        normalDialog.setTitle("友情提示:");
+        normalDialog.setMessage("恭喜您已经完成本关卡，请继续挑战下一关卡！");
+        normalDialog.setCancelable(true);
+        normalDialog.setPositiveButton("确定",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Holographic3Activity.this.finish();
+                    }
+                });
+        normalDialog.setNegativeButton("重做",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        position = 0;
+                        playGame();
+                    }
+                });
+        // 显示
+        normalDialog.show();
+    }
+
 }

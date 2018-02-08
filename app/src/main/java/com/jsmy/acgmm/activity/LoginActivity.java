@@ -2,6 +2,8 @@ package com.jsmy.acgmm.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -63,6 +65,8 @@ public class LoginActivity extends BaseActivity {
         if (null == zh || "".equals(zh) || null == mm || "".equals(mm)) {
 
         } else {
+            etZh.setText(zh);
+            etMm.setText(mm);
             NetWork.logIn(zh, mm, this);
         }
     }
@@ -80,8 +84,8 @@ public class LoginActivity extends BaseActivity {
                     loginJMessage(SPF.getString(this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()));
                     SPF.saveString(this, SPF.SP_NC, MyApp.getMyApp().bean.getNic());
 //                    startActivity(new Intent(this, MainActivity.class));
-                    startActivity(new Intent(this, Holographic1Activity.class));
-                    this.finish();
+                    LoginActivity.this.startActivity(new Intent(LoginActivity.this, Holographic1Activity.class));
+                    LoginActivity.this.finish();
                     break;
             }
         } else {
@@ -124,4 +128,5 @@ public class LoginActivity extends BaseActivity {
         mm = MD5.md5(mm);
         NetWork.logIn(zh, mm, this);
     }
+
 }

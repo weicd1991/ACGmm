@@ -83,15 +83,15 @@ public class Holographic1Activity extends BaseActivity {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 pageindex = 1;
-//                NetWork.getmyqxjclist(SPF.getString(Holographic1Activity.this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()), pageindex + "", "10", Holographic1Activity.this);
+                NetWork.getmyqxjclist(SPF.getString(Holographic1Activity.this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()), pageindex + "", "10", Holographic1Activity.this);
                 refreshlayout.finishRefresh();
             }
         });
         refreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
             @Override
             public void onLoadmore(RefreshLayout refreshlayout) {
-                pageindex++;
-//                NetWork.getmyqxjclist(SPF.getString(Holographic1Activity.this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()), pageindex + "", "10", Holographic1Activity.this);
+                //pageindex++;
+               // NetWork.getmyqxjclist(SPF.getString(Holographic1Activity.this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()), pageindex + "", "10", Holographic1Activity.this);
                 refreshlayout.finishLoadmore();
             }
         });
@@ -141,6 +141,7 @@ public class Holographic1Activity extends BaseActivity {
                         chiosePopWindow.showBook();
                     break;
                 case API.GET_MYQX_JCLIST:
+                    pageindex = 1;
                     listH = gson.fromJson(result, Holo1Bean.class).getData().getList();
                     if (pageindex == 1) {
                         handler.sendEmptyMessage(101);
@@ -193,9 +194,9 @@ public class Holographic1Activity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         pageindex = 1;
         NetWork.getmyqxjclist(SPF.getString(Holographic1Activity.this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()), pageindex + "", "10", Holographic1Activity.this);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private ChiosePopWindow chiosePopWindow;

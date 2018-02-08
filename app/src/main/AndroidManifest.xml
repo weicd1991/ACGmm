@@ -132,10 +132,13 @@
         <activity
             android:name=".activity.Holographic2Activity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
         <activity
             android:name=".activity.Holographic3Activity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
         <activity
@@ -151,7 +154,7 @@
         <service
             android:name=".service.DownVideoService"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
         <!-- 微信登录 微信支付 -->
         <activity
             android:name=".wxapi.WXEntryActivity"

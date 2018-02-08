@@ -51,7 +51,7 @@ public class Holographic1Adapter extends RecyclerView.Adapter<Holographic1Adapte
                 Intent intent = new Intent(context, Holographic2Activity.class);
                 intent.putExtra("type", "1");
                 intent.putExtra("id", list.get(position).getDyid());
-                context.startActivity(intent);
+                context.startActivityForResult(intent, 101);
             }
         });
         holder.tvPm.setOnClickListener(new View.OnClickListener() {
@@ -60,7 +60,7 @@ public class Holographic1Adapter extends RecyclerView.Adapter<Holographic1Adapte
                 Intent intent = new Intent(context, Holographic3Activity.class);
                 intent.putExtra("type", "2");
                 intent.putExtra("id", list.get(position).getDyid());
-                context.startActivity(intent);
+                context.startActivityForResult(intent, 101);
             }
         });
     }

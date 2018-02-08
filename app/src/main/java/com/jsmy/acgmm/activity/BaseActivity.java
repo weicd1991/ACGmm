@@ -49,7 +49,7 @@ public abstract class BaseActivity extends FragmentActivity implements NetWork.C
         TAG = getClass().getName();
         MyLog.showLog(TAG, getClass().getName());
         File file = new File(API.SAVA_DOC_PATH);
-        if (!file.exists()){
+        if (!file.exists()) {
             file.mkdir();
         }
     }

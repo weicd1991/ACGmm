@@ -21,7 +21,7 @@
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/oval_drawable" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -32,13 +32,6 @@
             android:padding="10dp"
             android:text="意见反馈"
             android:textSize="15sp" />
-
-        <ImageView
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher" />
 
     </RelativeLayout>
 
@@ -59,7 +52,7 @@
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/oval_drawable" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -70,13 +63,6 @@
             android:padding="10dp"
             android:text="关于我们"
             android:textSize="15sp" />
-
-        <ImageView
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher" />
 
     </RelativeLayout>
 
@@ -97,7 +83,7 @@
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/oval_drawable" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -108,13 +94,6 @@
             android:padding="10dp"
             android:text="使用协议"
             android:textSize="15sp" />
-
-        <ImageView
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher" />
 
     </RelativeLayout>
 
@@ -135,7 +114,7 @@
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/oval_drawable" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -175,7 +154,7 @@
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/oval_drawable" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -215,7 +194,7 @@
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_centerVertical="true"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/oval_drawable" />
 
         <TextView
             android:layout_width="wrap_content"

@@ -8,12 +8,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,6 @@ import com.jsmy.acgmm.model.NetWork;
 import com.jsmy.acgmm.util.GetPathFromUri4kitkat;
 import com.jsmy.acgmm.util.SPF;
 import com.jsmy.acgmm.util.ToastUtil;
-import com.jsmy.acgmm.view.ChoiceImageWindow;
 import com.jsmy.acgmm.view.ChoiceImageWindow2;
 import com.jsmy.acgmm.view.CircleImageView;
 import com.tbruyelle.rxpermissions.RxPermissions;
@@ -80,20 +78,7 @@ public class MyActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        imgWall.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                showChoiceWindow(true);
-                return false;
-            }
-        });
-        imgTx.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                showChoiceWindow(false);
-                return false;
-            }
-        });
+
     }
 
     @Override
@@ -149,7 +134,7 @@ public class MyActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.rela_bzzx, R.id.rela_mymsg, R.id.rela_mysys, R.id.rela_person, R.id.tv_school, R.id.rela_back})
+    @OnClick({R.id.rela_bzzx, R.id.rela_mymsg, R.id.rela_mysys, R.id.rela_person, R.id.tv_school, R.id.rela_back, R.id.img_wall, R.id.img_tx})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rela_person:
@@ -169,6 +154,12 @@ public class MyActivity extends BaseActivity {
                 break;
             case R.id.rela_back:
                 finish();
+                break;
+            case R.id.img_wall:
+                showChoiceWindow(true);
+                break;
+            case R.id.img_tx:
+                showChoiceWindow(false);
                 break;
         }
     }
@@ -426,6 +417,5 @@ public class MyActivity extends BaseActivity {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
 
 }

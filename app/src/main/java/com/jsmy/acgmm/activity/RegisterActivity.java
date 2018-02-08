@@ -6,6 +6,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.jsmy.acgmm.MyApp;
 import com.jsmy.acgmm.R;
 import com.jsmy.acgmm.model.API;
 import com.jsmy.acgmm.model.NetWork;
@@ -87,7 +88,7 @@ public class RegisterActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.tv_use:
-
+                goToWebView(this, API.NITICE_CENTER + SPF.getString(this, SPF.SP_ID, ""));
                 break;
         }
     }
