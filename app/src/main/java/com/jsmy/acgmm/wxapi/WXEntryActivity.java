@@ -40,27 +40,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler, Net
         MyLog.showLog(TAG, "结束微信登录");
     }
 
-//    @Override
-//    protected void onNewIntent(Intent intent) {
-//        super.onNewIntent(intent);
-//        MyLog.showLog("WXEntryActivity", "onNewIntent");
-//        setIntent(intent);
-//        mWeixinAPI.handleIntent(intent, this);//必须调用此句话
-//    }
-
-//    public void loginToWeiXin(Context context) {
-//        mWeixinAPI.registerApp(Constants.WEIXIN_APP_ID);
-//        if (mWeixinAPI != null && mWeixinAPI.isWXAppInstalled()) {
-//            SendAuth.Req req = new SendAuth.Req();
-//            req.scope = "snsapi_userinfo";
-//            req.state = "wechat_sdk_demo_test_neng";
-//            mWeixinAPI.sendReq(req);
-//        } else {
-////            Toast.makeText(context, "没有安装微信,请选择其他方式登录！", Toast.LENGTH_SHORT).show();
-//            ToastUtil.showShort(context, "没有安装微信,请选择其他方式登录！");
-//        }
-//    }
-
     //微信发送的请求将回调到onReq方法
     @Override
     public void onReq(BaseReq req) {

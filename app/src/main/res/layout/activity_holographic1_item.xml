@@ -18,6 +18,14 @@
             android:layout_margin="10dp"
             android:src="@mipmap/ic_launcher" />
 
+        <ImageView
+            android:id="@+id/img_complete"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="10dp"
+            android:src="@drawable/complete"
+            android:layout_toRightOf="@+id/tv_finish"/>
+
         <TextView
             android:id="@+id/tv_unit"
             android:layout_width="wrap_content"

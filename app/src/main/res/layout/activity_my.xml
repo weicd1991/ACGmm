@@ -14,14 +14,14 @@
         <com.flaviofaria.kenburnsview.KenBurnsView
             android:id="@+id/img_wall"
             android:layout_width="match_parent"
-            android:layout_height="180dp" />
+            android:layout_height="180dp"
+            android:visibility="gone"/>
 
         <RelativeLayout
             android:id="@+id/rela_person"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/img_wall"
-            android:layout_marginTop="-35dp"
             android:padding="10dp">
 
             <com.jsmy.acgmm.view.CircleImageView
@@ -39,7 +39,8 @@
                 android:layout_margin="5dp"
                 android:layout_toRightOf="@+id/img_tx"
                 android:text="21岁"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textColor="#333333"/>
 
             <TextView
                 android:id="@+id/tv_sex"
@@ -49,7 +50,8 @@
                 android:layout_margin="5dp"
                 android:layout_toRightOf="@+id/tv_age"
                 android:text="女"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textColor="#333333"/>
 
             <TextView
                 android:id="@+id/tv_name"
@@ -58,7 +60,8 @@
                 android:layout_below="@+id/img_tx"
                 android:layout_marginLeft="20dp"
                 android:text="姓名"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:textColor="#333333"/>
 
             <TextView
                 android:id="@+id/tv_sige"
@@ -67,7 +70,8 @@
                 android:layout_below="@+id/tv_name"
                 android:layout_marginLeft="20dp"
                 android:text="我的签名"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textColor="#333333"/>
 
 
         </RelativeLayout>
@@ -99,7 +103,8 @@
                     android:layout_alignParentRight="true"
                     android:hint="暂无学校"
                     android:padding="10dp"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:textColor="#333333"/>
 
                 <TextView
                     android:id="@+id/textView2"
@@ -109,7 +114,8 @@
                     android:layout_toRightOf="@+id/img_1"
                     android:padding="10dp"
                     android:text="我的学校"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:textColor="#333333"/>
 
             </RelativeLayout>
 
@@ -143,7 +149,8 @@
                     android:layout_toRightOf="@+id/img_2"
                     android:padding="10dp"
                     android:text="我的消息"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:textColor="#333333"/>
 
 
             </RelativeLayout>
@@ -177,7 +184,8 @@
                     android:layout_toRightOf="@+id/img_3"
                     android:padding="10dp"
                     android:text="帮助中心"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:textColor="#333333"/>
 
 
             </RelativeLayout>
@@ -210,7 +218,8 @@
                     android:layout_toRightOf="@+id/img_4"
                     android:padding="10dp"
                     android:text="系统设置"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:textColor="#333333"/>
 
 
             </RelativeLayout>

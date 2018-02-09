@@ -408,11 +408,11 @@ public class Holographic3Activity extends BaseActivity implements UniversalVideo
         alpha.setDuration(1000);
         alpha.setRepeatCount(0);
         alpha.setInterpolator(new AccelerateInterpolator());
-        ObjectAnimator scaleX = ObjectAnimator.ofFloat(img, "scaleX", 0.2f, 8f);
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(img, "scaleX", 0.2f, 5f);
         scaleX.setDuration(1000);
         scaleX.setRepeatCount(0);
         scaleX.setInterpolator(new AccelerateInterpolator());
-        ObjectAnimator scaleY = ObjectAnimator.ofFloat(img, "scaleY", 0.2f, 8f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(img, "scaleY", 0.2f, 5f);
         scaleY.setDuration(1000);
         scaleY.setRepeatCount(0);
         scaleY.setInterpolator(new AccelerateInterpolator());

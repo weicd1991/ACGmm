@@ -45,6 +45,11 @@ public class Holographic1Adapter extends RecyclerView.Adapter<Holographic1Adapte
         holder.tvUnit.setText(list.get(position).getDymc());
         holder.tvWord.setText("单词数：" + list.get(position).getAllcs() + "个");
         holder.tvFinish.setText("已完成：" + list.get(position).getYzcs() + "个");
+        if (list.get(position).getAllcs().equals(list.get(position).getYzcs())){
+            holder.imgComplete.setVisibility(View.VISIBLE);
+        }else {
+            holder.imgComplete.setVisibility(View.GONE);
+        }
         holder.tvQx.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,6 +82,7 @@ public class Holographic1Adapter extends RecyclerView.Adapter<Holographic1Adapte
         private TextView tvFinish;
         private TextView tvQx;
         private TextView tvPm;
+        private ImageView imgComplete;
 
         public Holographic1Holder(View itemView) {
             super(itemView);
@@ -86,6 +92,7 @@ public class Holographic1Adapter extends RecyclerView.Adapter<Holographic1Adapte
             tvFinish = (TextView) itemView.findViewById(R.id.tv_finish);
             tvQx = (TextView) itemView.findViewById(R.id.tv_qx);
             tvPm = (TextView) itemView.findViewById(R.id.tv_pm);
+            imgComplete = (ImageView) itemView.findViewById(R.id.img_complete);
         }
     }
 }

@@ -134,11 +134,14 @@ public class MyActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.rela_bzzx, R.id.rela_mymsg, R.id.rela_mysys, R.id.rela_person, R.id.tv_school, R.id.rela_back, R.id.img_wall, R.id.img_tx})
+    @OnClick({R.id.rela_bzzx, R.id.rela_mymsg, R.id.rela_mysys, R.id.rela_person, R.id.tv_school, R.id.rela_back, R.id.img_wall, R.id.img_tx,R.id.rela_myxx})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.rela_person:
-                startActivity(new Intent(this, MyInfoActivity.class));
+                startActivityForResult(new Intent(this, MyInfoActivity.class),101);
+                break;
+            case R.id.rela_myxx:
+                showSchoolChoiceDialog();
                 break;
             case R.id.tv_school:
                 showSchoolChoiceDialog();
@@ -414,6 +417,8 @@ public class MyActivity extends BaseActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }else {
+            getPersonInfo();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

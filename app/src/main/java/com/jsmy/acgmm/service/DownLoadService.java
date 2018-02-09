@@ -121,6 +121,10 @@ public class DownLoadService extends Service {
     }
 
     private void startDownload(String downUrl) {
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "acgmm.apk");
+        if (file != null && file.exists() && file.isFile()) {
+            file.delete();
+        }
         //获得系统下载器
         dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         //设置下载地址

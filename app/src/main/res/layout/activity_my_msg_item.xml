@@ -20,7 +20,7 @@
                 android:layout_width="10dp"
                 android:layout_height="10dp"
                 android:layout_centerVertical="true"
-                android:background="@color/colorAccent" />
+                android:src="@drawable/oval_drawable_red" />
 
             <TextView
                 android:id="@+id/tv_title"
