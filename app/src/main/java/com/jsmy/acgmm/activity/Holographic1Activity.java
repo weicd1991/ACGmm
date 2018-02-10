@@ -70,7 +70,7 @@ public class Holographic1Activity extends BaseActivity {
     @Override
     protected void initView() {
         tvBack.setText("我的");
-        tvTitle.setText("全息学英语");
+        tvTitle.setText("乐趣乐学");
         tvCheck.setText("教材");
         tvCheck.setVisibility(View.VISIBLE);
 

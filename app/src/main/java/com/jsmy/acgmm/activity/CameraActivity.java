@@ -222,7 +222,6 @@ public class CameraActivity extends BaseActivity {
                 mCameraView.start();
                 mCameraView.setAutoFocus(true);
             }
-
         } else {
             mCameraView.start();
             mCameraView.setAutoFocus(true);

@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatEditText;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +55,7 @@ public class Holographic2Activity extends BaseActivity implements UniversalVideo
     @BindView(R.id.video_layout)
     FrameLayout videoLayout;
     @BindView(R.id.edit_sige)
-    EditText editSige;
+    AppCompatEditText editSige;
     @BindView(R.id.activity_holographic2)
     RelativeLayout activityHolographic2;
 
@@ -342,7 +343,12 @@ public class Holographic2Activity extends BaseActivity implements UniversalVideo
                 finish();
                 break;
             case R.id.img_tasto:
-                goToWebView(this, API.HELP_CENTER + SPF.getString(this, "yhid", MyApp.getMyApp().bean.getYhid()) + "&&tid=" + listB.get(position).getCid());
+                try {
+                    goToWebView(this, API.HELP_CENTER + SPF.getString(this, "yhid", MyApp.getMyApp().bean.getYhid()) + "&&tid=" + listB.get(position).getCid());
+                } catch (NullPointerException e) {
+                    goToWebView(this, API.HELP_CENTER + SPF.getString(this, "yhid", MyApp.getMyApp().bean.getYhid()));
+                }
+
                 break;
             case R.id.tv_check:
                 completGame();
@@ -428,7 +434,7 @@ public class Holographic2Activity extends BaseActivity implements UniversalVideo
             @Override
             public void onAnimationEnd(Animator animation) {
                 activityHolographic2.removeView(img);
-                if (isRight){
+                if (isRight) {
                     NetWork.savedzinfo(SPF.getString(Holographic2Activity.this, SPF.SP_ID, MyApp.getMyApp().bean.getYhid()), cid, sc + "", Holographic2Activity.this);
                 }
             }
