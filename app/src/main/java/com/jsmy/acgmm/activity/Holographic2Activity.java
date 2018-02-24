@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -58,6 +56,8 @@ public class Holographic2Activity extends BaseActivity implements UniversalVideo
     AppCompatEditText editSige;
     @BindView(R.id.activity_holographic2)
     RelativeLayout activityHolographic2;
+    @BindView(R.id.tv_check)
+    TextView tvCheck;
 
     private int mSeekPosition;
     private int cachedHeight;
@@ -309,6 +309,8 @@ public class Holographic2Activity extends BaseActivity implements UniversalVideo
             videoView.resume();
             videoView.start();
         }
+        setRotationX(editSige);
+        setRotationX(tvCheck);
     }
 
     @Override
@@ -403,7 +405,6 @@ public class Holographic2Activity extends BaseActivity implements UniversalVideo
         }
     }
 
-
     private void scakeView(final boolean isRight) {
         final ImageView img = new ImageView(this);
         if (isRight) {
@@ -468,6 +469,12 @@ public class Holographic2Activity extends BaseActivity implements UniversalVideo
                 });
         // 显示
         normalDialog.show();
+    }
+
+    private void setRotationX(View view) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "rotationX", 0, 180);
+        animator.setDuration(500);
+        animator.start();
     }
 
 }
